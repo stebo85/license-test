@@ -1,0 +1,92 @@
+name: Process User Application
+
+on:
+  pull_request:
+    types: [opened]
+    paths: ['applications/**']
+
+jobs:
+  validate-application:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Validate Application
+        id: validate
+        run: |
+          # Check if the PR contains a valid application file
+          if [ -f "applications/pending/*.json" ]; then
+            echo "Application found"
+            # Add validation logic here
+            echo "validation=passed" >> $GITHUB_OUTPUT
+          else
+            echo "No valid application found"
+            echo "validation=failed" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Add Review Request
+        if: steps.validate.outputs.validation == 'passed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              reviewers: ['stebo85'] // Add appropriate reviewers here
+            });
+      
+      - name: Add Labels
+        if: steps.validate.outputs.validation == 'passed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['user-application', 'needs-review']
+            });
+
+  process-approved:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Move Application to Approved
+        run: |
+          # Move the application from pending to approved
+          mkdir -p applications/approved
+          if ls applications/pending/*.json 1> /dev/null 2>&1; then
+            mv applications/pending/*.json applications/approved/
+          fi
+      
+      - name: Add User to Organization
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ORG_TOKEN }}
+          script: |
+            // This would require a token with organization permissions
+            // and the neurodesk-users organization to exist
+            try {
+              const applicationFiles = require('fs').readdirSync('applications/approved');
+              for (const file of applicationFiles) {
+                if (file.endsWith('.json')) {
+                  const application = JSON.parse(require('fs').readFileSync(`applications/approved/${file}`, 'utf8'));
+                  
+                  // Invite user to neurodesk-users organization
+                  await github.rest.orgs.createInvitation({
+                    org: 'neurodesk-users',
+                    invitee_id: application.githubUsername,
+                    role: 'member'
+                  });
+                  
+                  console.log(`Invited ${application.githubUsername} to neurodesk-users organization`);
+                }
+              }
+            } catch (error) {
+              console.error('Error adding user to organization:', error);
+            }

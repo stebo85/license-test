@@ -1,0 +1,66 @@
+name: Handle Form Submission
+
+on:
+  repository_dispatch:
+    types: [user-application]
+
+jobs:
+  create-application-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create Application File
+        id: create-file
+        run: |
+          # Generate unique filename with timestamp
+          timestamp=$(date +%Y%m%d_%H%M%S)
+          username="${{ github.event.client_payload.githubUsername }}"
+          filename="applications/pending/${username}_${timestamp}.json"
+          
+          # Create the application JSON
+          cat > "$filename" << EOF
+          {
+            "timestamp": "${{ github.event.client_payload.timestamp }}",
+            "githubUsername": "${{ github.event.client_payload.githubUsername }}",
+            "email": "${{ github.event.client_payload.email }}",
+            "neurodeskUse": "${{ github.event.client_payload.neurodeskUse }}",
+            "status": "pending"
+          }
+          EOF
+          
+          echo "filename=$filename" >> $GITHUB_OUTPUT
+          echo "username=$username" >> $GITHUB_OUTPUT
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Add user application for ${{ steps.create-file.outputs.username }}"
+          title: "User Application: ${{ steps.create-file.outputs.username }}"
+          body: |
+            ## New User Application
+            
+            **GitHub Username:** ${{ github.event.client_payload.githubUsername }}
+            **Email:** ${{ github.event.client_payload.email }}
+            
+            **Intended Use:**
+            ${{ github.event.client_payload.neurodeskUse }}
+            
+            ---
+            
+            **Review Checklist:**
+            - [ ] GitHub username is valid and accessible
+            - [ ] Use case is appropriate for Neurodesk Play
+            - [ ] User agrees to follow code of conduct
+            
+            **Actions after approval:**
+            - User will be invited to the neurodesk-users organization
+            - Application will be moved to approved directory
+          branch: application/${{ steps.create-file.outputs.username }}
+          labels: |
+            user-application
+            needs-review
