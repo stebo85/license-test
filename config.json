@@ -1,0 +1,29 @@
+{
+  "site": {
+    "title": "Neurodesk Play Signup",
+    "description": "Join the Neurodesk community and get access to Neurodesk Play!",
+    "organization": "neurodesk-users",
+    "reviewers": ["stebo85"]
+  },
+  "links": {
+    "neurodesk": "https://neurodesk.org",
+    "github_org": "https://github.com/neurodesk",
+    "code_of_conduct": "https://github.com/neurodesk/neurodesk/blob/main/CODE_OF_CONDUCT.md"
+  },
+  "form": {
+    "fields": {
+      "github_username": {
+        "required": true,
+        "validation": "^[a-zA-Z0-9]([a-zA-Z0-9]|-)*[a-zA-Z0-9]$|^[a-zA-Z0-9]$"
+      },
+      "email": {
+        "required": true,
+        "validation": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+      },
+      "use_case": {
+        "required": true,
+        "min_length": 10
+      }
+    }
+  }
+}

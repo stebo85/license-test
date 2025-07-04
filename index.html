@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neurodesk Play Signup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Neurodesk Play Signup</h1>
+            <p>Join the Neurodesk community and get access to Neurodesk Play!</p>
+        </header>
+
+        <main>
+            <form id="signupForm" class="signup-form">
+                <div class="form-group">
+                    <label for="githubUsername">GitHub Username *</label>
+                    <input type="text" id="githubUsername" name="githubUsername" required>
+                    <small>Enter your GitHub username (without @)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                    <small>We'll use this to contact you about your application</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="neurodeskUse">What do you want to run on Neurodesk Play? *</label>
+                    <textarea id="neurodeskUse" name="neurodeskUse" rows="4" required placeholder="Describe what you'd like to use Neurodesk Play for (e.g., neuroimaging analysis, computational neuroscience research, etc.)"></textarea>
+                    <small>Tell us about your intended use case</small>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" id="submitBtn">Submit Application</button>
+                </div>
+            </form>
+
+            <div id="successMessage" class="message success" style="display: none;">
+                <h3>Application Submitted!</h3>
+                <p>Thank you for your interest in Neurodesk Play. Your application has been submitted and is pending review. You'll receive an email notification once your application is processed.</p>
+                <p><strong>Note:</strong> This is a demo version. In the full implementation, your application would create a pull request for review.</p>
+            </div>
+
+            <div id="errorMessage" class="message error" style="display: none;">
+                <h3>Submission Error</h3>
+                <p id="errorText">There was an error submitting your application. Please try again.</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>
+                By submitting this form, you agree to join the Neurodesk community and follow our 
+                <a href="https://github.com/neurodesk/neurodesk/blob/main/CODE_OF_CONDUCT.md" target="_blank">Code of Conduct</a>.
+            </p>
+            <p>
+                Learn more about <a href="https://neurodesk.org" target="_blank">Neurodesk</a> and 
+                <a href="https://github.com/neurodesk" target="_blank">our GitHub organization</a>.
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

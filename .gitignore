@@ -1,0 +1,28 @@
+# Development files
+.DS_Store
+*.log
+.env
+.env.local
+
+# Temporary files
+/tmp/
+*.tmp
+*.bak
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+build/
+
+# Node modules (if adding Node.js tooling later)
+node_modules/
+package-lock.json
+
+# System files
+Thumbs.db
+ehthumbs.db

@@ -1,0 +1,7 @@
+{
+  "timestamp": "2024-07-04T10:00:00.000Z",
+  "githubUsername": "example-user",
+  "email": "user@example.com",
+  "neurodeskUse": "I want to use Neurodesk Play for neuroimaging analysis and computational neuroscience research. Specifically, I plan to run FSL and FreeSurfer analyses on brain MRI data.",
+  "status": "pending"
+}
